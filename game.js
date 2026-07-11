@@ -144,8 +144,8 @@ class CoupGame {
       this.pushLog(`Turn timer ${this.options.timer ? 'ON' : 'OFF'}`);
     }
     if (key === 'turnSeconds') {
-      const allowed = [20, 30, 45];
-      if (allowed.includes(value)) this.options.turnSeconds = value;
+      const n = Math.round(Number(value));
+      if (Number.isFinite(n) && n >= 5 && n <= 600) this.options.turnSeconds = n;
     }
   }
 

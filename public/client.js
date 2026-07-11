@@ -30,6 +30,13 @@ function blockCharsFor(action) {
   }[action] || [];
 }
 
+const TIMER_PRESETS = [[20, '20s'], [30, '30s'], [45, '45s'], [60, '1m'], [120, '2m']];
+function fmtDuration(s) {
+  if (s < 60) return s + 's';
+  const m = Math.floor(s / 60), r = s % 60;
+  return r ? `${m}m${r}s` : `${m}m`;
+}
+
 let state = null;
 let myId = localStorage.getItem('coup_playerId');
 let myCode = localStorage.getItem('coup_code');
@@ -168,19 +175,31 @@ function renderLobby() {
     `<span>Auto-acts if someone stalls — Income on your turn, Pass on prompts.</span></div>`;
   if (state.isHost) {
     if (timerOn) {
+      const wrap = el('div', 'timer-opts');
       const seg = el('div', 'seg');
-      [20, 30, 45].forEach(s => {
-        const b = el('button', `seg-btn ${secs === s ? 'active' : ''}`, s + 's');
+      TIMER_PRESETS.forEach(([s, l]) => {
+        const b = el('button', `seg-btn ${secs === s ? 'active' : ''}`, l);
         b.onclick = () => socket.emit('setOption', { key: 'turnSeconds', value: s });
         seg.appendChild(b);
       });
-      row2.appendChild(seg);
+      wrap.appendChild(seg);
+      // Custom seconds (5–600).
+      const isPreset = TIMER_PRESETS.some(([s]) => s === secs);
+      const cust = el('input', `custom-secs ${isPreset ? '' : 'active'}`);
+      cust.type = 'number'; cust.min = '5'; cust.max = '600';
+      cust.placeholder = 'custom'; cust.title = 'Custom seconds (5–600)';
+      cust.value = isPreset ? '' : String(secs);
+      const apply = () => { const v = parseInt(cust.value, 10); if (v >= 5 && v <= 600 && v !== secs) socket.emit('setOption', { key: 'turnSeconds', value: v }); };
+      cust.onkeydown = (e) => { if (e.key === 'Enter') { apply(); cust.blur(); } };
+      cust.onblur = apply;
+      wrap.appendChild(cust);
+      row2.appendChild(wrap);
     }
     const toggle = el('button', `toggle ${timerOn ? 'on' : ''}`, `<span class="knob"></span>`);
     toggle.onclick = () => socket.emit('setOption', { key: 'timer', value: !timerOn });
     row2.appendChild(toggle);
   } else {
-    row2.appendChild(el('span', `status-pill ${timerOn ? 'on' : ''}`, timerOn ? `${secs}s` : 'OFF'));
+    row2.appendChild(el('span', `status-pill ${timerOn ? 'on' : ''}`, timerOn ? fmtDuration(secs) : 'OFF'));
   }
   opts.appendChild(row2);
 
@@ -279,7 +298,8 @@ function renderTimer(container) {
     const left = Math.max(0, endAt - Date.now());
     const pct = total ? (left / total) * 100 : 0;
     fill.style.width = pct + '%';
-    num.textContent = Math.ceil(left / 1000) + 's';
+    const s = Math.ceil(left / 1000);
+    num.textContent = s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}` : s + 's';
     fill.classList.toggle('low', left <= 6000);
     if (left > 0) timerRAF = requestAnimationFrame(tick);
   };
