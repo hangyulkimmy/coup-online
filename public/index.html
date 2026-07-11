@@ -32,6 +32,7 @@
         </div>
       </div>
       <p class="hint">Create a room, share the 4-letter code with friends, and play from anywhere.</p>
+      <button id="rulesBtnHome" class="link-btn">📖 New to Coup? Read the rules</button>
     </section>
 
     <!-- In-room screen (lobby waiting + live game) -->
@@ -40,7 +41,10 @@
         <div class="code-badge">Room <strong id="roomCode">----</strong>
           <button id="copyBtn" class="mini">Copy</button>
         </div>
-        <button id="leaveBtn" class="mini danger">Leave</button>
+        <div class="header-actions">
+          <button id="rulesBtn" class="mini">📖 Rules</button>
+          <button id="leaveBtn" class="mini danger">Leave</button>
+        </div>
       </header>
 
       <div id="lobbyView" class="hidden">
@@ -57,6 +61,66 @@
         <div id="log" class="log"></div>
       </div>
     </section>
+
+    <!-- Rulebook -->
+    <div id="rulesModal" class="modal-overlay hidden">
+      <div class="modal">
+        <div class="modal-head">
+          <h2>How to Play <span class="gold">COUP</span></h2>
+          <button id="rulesClose" class="mini">✕ Close</button>
+        </div>
+        <div class="modal-body">
+          <div class="chevron rule-chevron"></div>
+
+          <h3>The Goal</h3>
+          <p>Be the last player with any <b>influence</b> left. Your influence is your two face-down character cards — lose both and you're out of the game.</p>
+
+          <h3>Setup &amp; Your Turn</h3>
+          <ul>
+            <li>Everyone starts with <b>2 coins</b> and <b>2 influence</b> (hidden character cards).</li>
+            <li>On your turn you take <b>one action</b> (below), then play passes on.</li>
+            <li>If you ever start a turn with <b>10+ coins, you must Coup.</b></li>
+            <li>You can <b>bluff</b> — claim any character whether or not you actually hold it. The risk is being challenged.</li>
+          </ul>
+
+          <h3>Basic Actions <span class="muted">(always available, no character needed)</span></h3>
+          <ul>
+            <li><b>Income</b> — Take <b>1 coin</b>. Totally safe, can't be stopped.</li>
+            <li><b>Foreign Aid</b> — Take <b>2 coins</b>. Can be <b>blocked by a Duke</b>.</li>
+            <li><b>Coup</b> — Pay <b>7 coins</b> and force a player to lose an influence. Cannot be blocked or challenged.</li>
+          </ul>
+
+          <h3>Character Actions <span class="muted">(claim the character — you may be bluffing)</span></h3>
+          <div class="rule-cards">
+            <div class="rule-card rc-duke"><b>Duke</b><span>Tax: take 3 coins. Blocks Foreign Aid.</span></div>
+            <div class="rule-card rc-assassin"><b>Assassin</b><span>Pay 3 coins to make a player lose an influence.</span></div>
+            <div class="rule-card rc-captain"><b>Captain</b><span>Steal 2 coins from a player. Blocks stealing.</span></div>
+            <div class="rule-card rc-ambassador"><b>Ambassador</b><span>Exchange: draw 2 from the deck, keep the best, return 2. Blocks stealing.</span></div>
+            <div class="rule-card rc-contessa"><b>Contessa</b><span>Blocks assassination.</span></div>
+          </div>
+
+          <h3>Challenges</h3>
+          <p>Whenever someone <b>claims a character</b> (for an action or a block), any other player may <b>Challenge</b> it:</p>
+          <ul>
+            <li>If the claimer <b>really has the card</b>, they prove it — the <b>challenger loses an influence</b>, and the claimer shuffles that card back and draws a new one.</li>
+            <li>If they were <b>bluffing</b>, the <b>claimer loses an influence</b> and their action fails.</li>
+          </ul>
+
+          <h3>Blocks</h3>
+          <p>Some actions can be stopped by claiming a blocking character — <b>Duke</b> blocks Foreign Aid, <b>Contessa</b> blocks assassination, <b>Captain</b>/<b>Ambassador</b> block stealing. A block can itself be challenged (maybe the blocker is bluffing!).</p>
+
+          <h3>Losing Influence &amp; Winning</h3>
+          <p>When you lose influence, you reveal one of your cards (<b>your choice</b>) face-up for good. At <b>0 influence you're eliminated</b>. The last player standing <b>wins</b>. 🏆</p>
+
+          <div class="rule-divider"><span>Optional Modes</span></div>
+          <p class="muted">The host can toggle these in the lobby before starting.</p>
+          <ul>
+            <li><b>Inquisitor mode</b> — Replaces the Ambassador. Exchange <b>1</b> card (not 2), blocks stealing, and adds <b>Interrogate</b>: force a player to secretly show you one card, then choose whether to make them swap it.</li>
+            <li><b>Turn timer</b> — If a player stalls, the game auto-acts for them (Income on your turn, Pass on prompts) so nobody freezes the game. Pick 20s–2m or a custom length.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
     <div id="toast" class="toast hidden"></div>
   </div>

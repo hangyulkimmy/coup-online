@@ -85,6 +85,16 @@ $('leaveBtn').onclick = () => {
 };
 $('startBtn').onclick = () => socket.emit('startGame');
 
+// Rulebook modal
+const rulesModal = $('rulesModal');
+const openRules = () => rulesModal.classList.remove('hidden');
+const closeRules = () => rulesModal.classList.add('hidden');
+$('rulesBtn').onclick = openRules;
+$('rulesBtnHome').onclick = openRules;
+$('rulesClose').onclick = closeRules;
+rulesModal.onclick = (e) => { if (e.target === rulesModal) closeRules(); };
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeRules(); });
+
 // ---------- socket events ----------
 socket.on('connect', () => {
   if (myId && myCode) socket.emit('rejoin', { code: myCode, playerId: myId });

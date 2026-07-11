@@ -101,6 +101,38 @@ input:focus { border-color: var(--accent); }
 .join-row input { flex: 1; }
 .join-row .btn { width: auto; margin-top: 0; padding: 0 22px; }
 .hint { text-align: center; color: var(--muted); font-size: 13px; margin-top: 18px; }
+.link-btn { display: block; margin: 14px auto 0; background: none; border: none; color: var(--accent); font-family: var(--font-display); font-size: 13px; cursor: pointer; letter-spacing: .5px; }
+.link-btn:hover { text-decoration: underline; }
+.header-actions { display: flex; gap: 8px; }
+
+/* ---------- Rulebook modal ---------- */
+.modal-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(5,7,12,.78); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; animation: fade .2s ease; }
+.modal { background: linear-gradient(180deg, #191d2c, var(--panel)); border: 1px solid var(--line); border-radius: var(--radius); width: 100%; max-width: 640px; max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+.modal-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--line); }
+.modal-head h2 { font-size: 20px; text-transform: uppercase; letter-spacing: 1.5px; }
+.modal-head .gold { color: var(--accent); }
+.modal-body { padding: 20px 22px 26px; overflow-y: auto; }
+.modal-body h3 { font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin: 22px 0 8px; }
+.modal-body h3:first-of-type { margin-top: 6px; }
+.modal-body h3 .muted, .modal-body p .muted { color: var(--muted); font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 12px; }
+.modal-body p { color: var(--text); line-height: 1.55; margin-bottom: 4px; font-size: 14px; }
+.modal-body ul { list-style: none; margin: 4px 0; }
+.modal-body li { position: relative; padding-left: 18px; margin-bottom: 7px; line-height: 1.5; font-size: 14px; color: var(--text); }
+.modal-body li::before { content: ""; position: absolute; left: 0; top: 8px; width: 8px; height: 8px; background: var(--accent); -webkit-clip-path: polygon(0 0, 100% 50%, 0 100%); clip-path: polygon(0 0, 100% 50%, 0 100%); }
+.modal-body b { color: #fff; }
+.rule-chevron { margin: 0 0 6px; width: 120px; }
+.rule-cards { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 10px 0; }
+.rule-card { border-radius: 10px; padding: 10px 14px; border-left: 4px solid rgba(255,255,255,.25); background: rgba(255,255,255,.04); }
+.rule-card b { display: inline-block; font-family: var(--font-display); letter-spacing: .5px; margin-right: 8px; color: #fff; }
+.rule-card span { color: var(--muted); font-size: 13px; }
+.rule-card.rc-duke { border-left-color: #9a6de0; }
+.rule-card.rc-assassin { border-left-color: #7f8697; }
+.rule-card.rc-captain { border-left-color: var(--captain); }
+.rule-card.rc-ambassador { border-left-color: var(--ambassador); }
+.rule-card.rc-contessa { border-left-color: var(--contessa); }
+.rule-divider { text-align: center; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 2px; color: var(--accent); font-size: 13px; margin: 26px 0 6px; position: relative; }
+.rule-divider::before, .rule-divider::after { content: ""; position: absolute; top: 50%; width: 30%; height: 1px; background: var(--line); }
+.rule-divider::before { left: 0; } .rule-divider::after { right: 0; }
 
 /* ---------- Room header ---------- */
 .room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
