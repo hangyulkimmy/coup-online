@@ -105,6 +105,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('setOption', ({ key, value }) => act((g, pid) => g.setOption(pid, key, value)));
+  socket.on('kickPlayer', ({ targetId }) => act((g, pid) => g.kickPlayer(pid, targetId)));
   socket.on('startGame', () => act((g, pid) => g.start(pid)));
   socket.on('action', ({ action, target }) => act((g, pid) => g.doAction(pid, action, target)));
   socket.on('respond', ({ type, character }) => act((g, pid) => g.respond(pid, type, character)));

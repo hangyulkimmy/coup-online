@@ -61,6 +61,73 @@ class CoupGame {
     }
   }
 
+  // Host removes a player. In the lobby they're dropped entirely; mid-game they
+  // are eliminated and the game advances cleanly past them.
+  kickPlayer(byId, targetId) {
+    if (!this.isHost(byId)) throw new Error('Only the host can kick');
+    if (byId === targetId) throw new Error("You can't kick yourself");
+    const target = this.get(targetId);
+    if (!target) throw new Error('No such player');
+
+    if (this.phase === 'lobby') {
+      this.removePlayer(targetId);
+      this.pushLog(`${target.name} was removed by the host`);
+      return;
+    }
+
+    // Is the game currently waiting on this player (or on an action they own)?
+    const p = this.pending;
+    const central =
+      (this.phase === 'action' && this.current().id === targetId) ||
+      (p && [p.actorId, p.targetId, p.blockerId].includes(targetId)) ||
+      (this.loseState && this.loseState.playerId === targetId) ||
+      (this.exchangeState && this.exchangeState.playerId === targetId) ||
+      (this.interrogateState &&
+        [this.interrogateState.inquisitorId, this.interrogateState.targetId].includes(targetId));
+
+    // Eliminate them (reveal all remaining influence).
+    target.revealed.push(...target.influence);
+    target.influence = [];
+    target.connected = false;
+    target.kicked = true;
+    this.pushLog(`${target.name} was kicked by the host and is out`);
+
+    if (central) {
+      // Abort the in-flight action and move to a clean turn boundary.
+      this.pending = null;
+      this.loseState = null;
+      this.exchangeState = null;
+      this.interrogateState = null;
+      return this.endTurn();
+    }
+
+    // If we were waiting on responders, they're no longer one — re-check.
+    if (this.phase === 'response') {
+      const remaining = this.responders().filter(r => !p.passed.includes(r.id));
+      if (remaining.length === 0) {
+        if (p.window === 'challenge') this.afterChallenge();
+        else if (p.window === 'block') this.resolveEffect();
+        else if (p.window === 'block_challenge') this.blockSucceeds();
+        return;
+      }
+    }
+
+    this.checkGameOverAfterKick();
+  }
+
+  checkGameOverAfterKick() {
+    const alive = this.alivePlayers();
+    if (alive.length <= 1) {
+      this.pending = null;
+      this.loseState = null;
+      this.exchangeState = null;
+      this.interrogateState = null;
+      this.phase = 'game_over';
+      this.winner = alive[0] || null;
+      if (this.winner) this.pushLog(`🏆 ${this.winner.name} wins the game!`);
+    }
+  }
+
   get(id) { return this.players.find(p => p.id === id); }
   alivePlayers() { return this.players.filter(p => p.influence.length > 0); }
   isHost(id) { return this.players.length > 0 && this.players[0].id === id; }
@@ -608,6 +675,7 @@ class CoupGame {
         name: pl.name,
         coins: pl.coins,
         connected: pl.connected,
+        kicked: !!pl.kicked,
         influenceCount: pl.influence.length,
         revealed: pl.revealed,
         alive: pl.influence.length > 0,

@@ -98,8 +98,22 @@ socket.on('errorMsg', (msg) => toast(msg));
 socket.on('state', (s) => { state = s; render(); });
 
 // ---------- rendering ----------
+let kickedHandled = false;
+function handleKicked() {
+  if (kickedHandled) return;
+  kickedHandled = true;
+  localStorage.removeItem('coup_playerId');
+  localStorage.removeItem('coup_code');
+  socket.emit('leaveRoom'); // stop receiving updates
+  $('room').classList.add('hidden');
+  $('home').classList.remove('hidden');
+  toast('You were removed from the game by the host');
+}
+
 function render() {
   if (!state) return;
+  const me = state.players.find(p => p.id === state.you);
+  if (me && me.kicked) return handleKicked();
   $('roomCode').textContent = state.code;
 
   if (state.phase === 'lobby') {
@@ -122,6 +136,12 @@ function renderLobby() {
     const li = el('li', '', `<span class="dot"></span> ${escapeHtml(p.name)}`);
     if (i === 0) li.appendChild(el('span', 'host-tag', 'HOST'));
     if (p.id === state.you) li.appendChild(el('span', 'you-badge', 'YOU'));
+    if (state.isHost && p.id !== state.you) {
+      const k = el('button', 'kick-btn', '✕');
+      k.title = `Remove ${p.name}`;
+      k.onclick = () => socket.emit('kickPlayer', { targetId: p.id });
+      li.appendChild(k);
+    }
     ul.appendChild(li);
   });
   // Game options (host can toggle; everyone sees the current setting).
@@ -191,8 +211,18 @@ function renderBoard() {
       `<span class="dot ${p.connected ? '' : 'off'}"></span>${escapeHtml(p.name)}`);
     if (p.id === state.you) nameEl.appendChild(el('span', 'you-badge', 'YOU'));
     if (p.isCurrent) nameEl.appendChild(el('span', 'turn-badge', 'TURN'));
+    if (p.kicked) nameEl.appendChild(el('span', 'kicked-badge', 'KICKED'));
     top.appendChild(nameEl);
-    top.appendChild(el('span', 'coins', String(p.coins)));
+    const right = el('div', 'player-right');
+    right.appendChild(el('span', 'coins', String(p.coins)));
+    // Host can remove any other player still in the game.
+    if (state.isHost && p.id !== state.you && p.alive) {
+      const k = el('button', 'kick-btn', '✕');
+      k.title = `Kick ${p.name}`;
+      k.onclick = () => { if (confirm(`Kick ${p.name} from the game?`)) socket.emit('kickPlayer', { targetId: p.id }); };
+      right.appendChild(k);
+    }
+    top.appendChild(right);
     wrap.appendChild(top);
 
     const hand = el('div', 'hand');

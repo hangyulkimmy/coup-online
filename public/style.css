@@ -124,9 +124,14 @@ input:focus { border-color: var(--accent); }
 .player-name .dot.off { background: var(--muted); }
 .coins { background: var(--bg2); border: 1px solid var(--line); border-radius: 20px; padding: 3px 10px; font-size: 13px; font-weight: 700; }
 .coins::before { content: "🪙 "; }
-.you-badge, .turn-badge { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 700; margin-left: 6px; }
+.you-badge, .turn-badge, .kicked-badge { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 700; margin-left: 6px; }
 .you-badge { background: var(--blue); }
 .turn-badge { background: var(--accent); color: #201800; }
+.kicked-badge { background: var(--danger); color: #fff; }
+.player-right { display: flex; align-items: center; gap: 8px; }
+.kick-btn { background: transparent; border: 1px solid var(--line); color: var(--muted); width: 24px; height: 24px; border-radius: 6px; cursor: pointer; font-size: 12px; line-height: 1; padding: 0; transition: .15s; }
+.kick-btn:hover { border-color: var(--danger); color: var(--danger); background: rgba(217,83,79,.12); }
+.lobby-players .kick-btn { margin-left: 8px; }
 
 .hand { display: flex; gap: 8px; }
 .mini-card {
