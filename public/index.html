@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coup Online</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Home / lobby-entry screen -->
+    <section id="home" class="screen">
+      <h1 class="logo">COUP</h1>
+      <p class="tagline">Bluff. Challenge. Betray. Last one standing wins.</p>
+
+      <div class="card-panel">
+        <label>Your name</label>
+        <input id="nameInput" maxlength="16" placeholder="e.g. Alex" autocomplete="off" />
+
+        <button id="createBtn" class="btn primary">Create a room</button>
+
+        <div class="divider"><span>or join one</span></div>
+
+        <div class="join-row">
+          <input id="codeInput" maxlength="4" placeholder="CODE" autocomplete="off" />
+          <button id="joinBtn" class="btn">Join</button>
+        </div>
+      </div>
+      <p class="hint">Create a room, share the 4-letter code with friends, and play from anywhere.</p>
+    </section>
+
+    <!-- In-room screen (lobby waiting + live game) -->
+    <section id="room" class="screen hidden">
+      <header class="room-header">
+        <div class="code-badge">Room <strong id="roomCode">----</strong>
+          <button id="copyBtn" class="mini">Copy</button>
+        </div>
+        <button id="leaveBtn" class="mini danger">Leave</button>
+      </header>
+
+      <div id="lobbyView" class="hidden">
+        <h2>Waiting for players…</h2>
+        <ul id="lobbyPlayers" class="lobby-players"></ul>
+        <div id="lobbyOptions" class="lobby-options"></div>
+        <button id="startBtn" class="btn primary hidden">Start game</button>
+        <p id="lobbyHint" class="hint"></p>
+      </div>
+
+      <div id="gameView" class="hidden">
+        <div id="board" class="board"></div>
+        <div id="controls" class="controls"></div>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>
