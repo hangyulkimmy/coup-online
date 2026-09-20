@@ -17,10 +17,10 @@ Then open http://localhost:3000. Create a room, share the 4-letter code, and fri
 
 ## Features
 
-- Full Coup rules — challenges, blocks, and bluffing
+- Full Coup rules - challenges, blocks, and bluffing
 - 2–6 players, private room codes, refresh-safe rejoin
-- **Inquisitor mode** (optional, host toggle) — the official expansion role
-- **Turn timer** (optional, host toggle) — auto-acts if a player stalls, so nobody freezes the game
+- **Inquisitor mode** (optional, host toggle) - the official expansion role
+- **Turn timer** (optional, host toggle) - auto-acts if a player stalls, so nobody freezes the game
 - Custom card art in `public/images/` (auto-loaded, colored fallback if missing)
 
 ## Tech
