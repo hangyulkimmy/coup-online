@@ -1,5 +1,9 @@
 # Coup Online
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/hangyulkimmy/coup-online)
+
+> Free tier: the server sleeps when idle and takes ~30s to wake on the first visit.
+
 Online multiplayer [Coup](https://boardgamegeek.com/boardgame/131357/coup) with jklm.fun-style room codes. Bluff, challenge, and betray your friends from anywhere.
 
 ## Play locally
